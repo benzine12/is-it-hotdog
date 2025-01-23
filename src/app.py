@@ -12,8 +12,11 @@ app = FastAPI()
 templates = Jinja2Templates(directory="templates")
 
 # Load model and labels at startup for better performance
-model = load_model("keras_Model.h5", compile=False)
-with open("labels.txt", "r") as f:
+model_path = os.path.join(os.path.dirname(__file__), "keras_Model.h5")
+labels_path = os.path.join(os.path.dirname(__file__), "labels.txt")
+
+model = load_model(model_path, compile=False)
+with open(labels_path, "r") as f:
     class_names = f.readlines()
 
 def classify_image(image_path):
@@ -85,3 +88,8 @@ async def upload_image(file: UploadFile = File(...)):
                 os.remove(temp_path)
     
     return {"error": "Invalid file type. Please upload an image.", "success": False}
+
+if __name__ == "__main__":
+    import uvicorn
+    port = int(os.environ.get("PORT", 8000))
+    uvicorn.run(app, host="0.0.0.0", port=port)
