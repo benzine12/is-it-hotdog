@@ -13,7 +13,7 @@ This project is a simple FastAPI application that allows users to upload an imag
 
 2. Create a virtual environment:
    ```
-   virtualenv -p python3.11 env
+   virtualenv -p python3.10 env
    source env/bin/activate  # On Windows use `env\Scripts\activate`
    ```
 
@@ -32,12 +32,6 @@ This project is a simple FastAPI application that allows users to upload an imag
 2. Open your browser and go to `http://127.0.0.1:8000`.
 
 3. Use the provided form to upload an image and check if it is a hotdog.
-
-## Dependencies
-
-- FastAPI
-- Uvicorn
-- Any additional libraries required for image processing (e.g., Pillow, TensorFlow, etc.)
 
 ## License
 
