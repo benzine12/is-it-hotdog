@@ -17,7 +17,7 @@ app.add_middleware(
 )
 
 # Load model and labels at startup
-model_path = os.path.join(os.path.dirname(__file__), "keras_Model.h5")
+model_path = os.path.join(os.path.dirname(__file__), "keras_model.h5")
 labels_path = os.path.join(os.path.dirname(__file__), "labels.txt")
 model = load_model(model_path, compile=False)
 

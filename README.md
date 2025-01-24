@@ -2,19 +2,6 @@
 
 This project is a simple FastAPI application that allows users to upload an image and determines whether the image is a hotdog or not.
 
-## Project Structure
-
-```
-fastapi-hotdog-app
-├── src
-│   ├── app.py               # Main application file
-│   ├── templates
-│   │   └── index.html       # HTML template for image upload
-│   └── static
-│       └── styles.css       # CSS styles for the HTML page
-├── requirements.txt         # Project dependencies
-└── README.md                # Project documentation
-```
 
 ## Setup Instructions
 
@@ -26,8 +13,8 @@ fastapi-hotdog-app
 
 2. Create a virtual environment:
    ```
-   python -m venv venv
-   source venv/bin/activate  # On Windows use `venv\Scripts\activate`
+   virtualenv -p python3.11 env
+   source env/bin/activate  # On Windows use `env\Scripts\activate`
    ```
 
 3. Install the required dependencies:
@@ -39,7 +26,7 @@ fastapi-hotdog-app
 
 1. Start the FastAPI server:
    ```
-   uvicorn src.app:app --reload
+   uvicorn src.main:app --reload
    ```
 
 2. Open your browser and go to `http://127.0.0.1:8000`.
