@@ -6,15 +6,18 @@ import os
 from keras.models import load_model
 from PIL import Image, ImageOps
 import numpy as np
+from pathlib import Path
+from fastapi.responses import HTMLResponse
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 app = FastAPI()
+static_folder = Path("static")
 
 app.add_middleware(
    CORSMiddleware,
-   allow_origins=["*", "https://tubular-cascaron-a48605.netlify.app"],
+   allow_origins=["*"],
    allow_credentials=False,
    allow_methods=["*"],
    allow_headers=["*"],
@@ -81,6 +84,13 @@ async def classify_upload(file: UploadFile = File(...)):
 @app.get("/test")
 async def root():
    return {"message": "Hello World"}
+
+
+@app.get("/", response_class=HTMLResponse)
+async def read_index():
+    # Read the content of the index.html file
+    index_file = static_folder / "index.html"
+    return index_file.read_text()
 
 if __name__ == "__main__":
    import uvicorn
