@@ -68,7 +68,7 @@ async def classify_upload(file: UploadFile = File(...)):
         if os.path.exists(temp_path):
             os.remove(temp_path)
 
-@app.get("/")
+@app.get("/test")
 async def root():
     return {"message": "Hello World"}
 
