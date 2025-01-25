@@ -1,10 +1,8 @@
 fastapi==0.109.2
 gunicorn==20.1.0
 keras==2.14.0
-# numpy==1.26.4
 numpy==1.23.5
 pillow==11.1.0
 python-multipart==0.0.6
-tensorflow-macos==2.14.0
-# tensorflow-cpu==2.14.0
+tensorflow==2.14.0
 uvicorn==0.27.1

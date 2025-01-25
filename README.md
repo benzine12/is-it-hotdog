@@ -2,6 +2,19 @@
 
 This project is a simple FastAPI application that allows users to upload an image and determines whether the image is a hotdog or not.
 
+## File Structure
+
+is-it-hotdog/
+|
+├── static/
+|  └──index.html
+|
+├── Dockerfile
+├── keras_model.h5
+├── labels.txt
+├── main.py
+├── README.md
+└── requirements.txt
 
 ## Setup Instructions
 
@@ -18,6 +31,7 @@ This project is a simple FastAPI application that allows users to upload an imag
    ```
 
 3. Install the required dependencies:
+   change 
    ```
    pip install -r requirements.txt
    ```
@@ -26,7 +40,7 @@ This project is a simple FastAPI application that allows users to upload an imag
 
 1. Start the FastAPI server:
    ```
-   uvicorn src.main:app --reload
+   uvicorn main:app --reload
    ```
 
 2. Open your browser and go to `http://127.0.0.1:8000`.
