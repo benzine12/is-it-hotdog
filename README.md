@@ -32,7 +32,6 @@ is-it-hotdog/
    ```
 
 3. Install the required dependencies:
-   change 
    ```
    pip install -r requirements.txt
    ```
@@ -47,6 +46,22 @@ is-it-hotdog/
 2. Open your browser and go to `http://127.0.0.1:8000`.
 
 3. Use the provided form to upload an image and check if it is a hotdog.
+
+## Docker Instructions
+
+To build and run the application using Docker, follow these steps:
+
+1. Build the Docker image:
+   ```
+   docker build -t fastapi-hotdog-app .
+   ```
+
+2. Run the Docker container:
+   ```
+   docker run -p 8000:8000 fastapi-hotdog-app
+   ```
+
+3. Open your browser and go to `http://127.0.0.1:8000`.
 
 ## License
 

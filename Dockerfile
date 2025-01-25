@@ -1,7 +1,17 @@
-FROM python:3.11.11
+# Description: Dockerfile for the FastAPI application
+FROM python:3.10.16
 
-ADD main.py .
+# Set the working directory
+WORKDIR /usr/src/app
 
-RUN pip install -r requirements.txt
+# Copy the entire application code
+COPY . .
 
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+# Install dependencies
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Expose the port
+EXPOSE 8000
+
+# Run the application
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
