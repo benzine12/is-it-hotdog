@@ -3,7 +3,7 @@
 This project is a simple FastAPI application that allows users to upload an image and determines whether the image is a hotdog or not.
 
 ## File Structure
-
+```
 is-it-hotdog/
 |
 ├── static/
@@ -15,6 +15,7 @@ is-it-hotdog/
 ├── main.py
 ├── README.md
 └── requirements.txt
+```
 
 ## Setup Instructions
 
