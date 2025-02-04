@@ -1,6 +1,6 @@
 # FastAPI Hotdog App
 
-This project is a simple FastAPI application that allows users to upload an image and determines whether the image is a hotdog or not. It uses a pre-trained Keras model for image classification and provides a web interface for users to upload images.
+This project is a FastAPI-based application that leverages a pre-trained AI model to classify images, specifically determining whether an uploaded image is a hotdog or not. The application utilizes a Keras deep learning model for image recognition and provides a web interface for seamless user interaction. By integrating FastAPI with AI-driven image classification, this project showcases the power of machine learning in real-time applications.
 
 ## File Structure
 ```
