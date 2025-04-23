@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Image Classifier</title>
+    <title>Is it a Hotdog?</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
     <style>
         .emoji {
@@ -25,9 +25,9 @@
 </head>
 <body class="bg-gray-100 min-h-screen p-4">
     <div class="max-w-md mx-auto bg-white rounded-xl shadow-md p-6">
-        <h1 class="text-3xl font-bold text-gray-900 text-center mb-2">Image Classifier</h1>
-        <p class="text-gray-600 text-center mb-6">Upload an image to classify it (PNG, JPG, JPEG only)</p>
-        <label class="flex flex-col w-full h-32 border-4 border-dashed hover:bg-gray-100 hover:border-gray-300 mb-4">
+        <h1 class="text-3xl font-bold text-gray-900 text-center mb-2">Is it a Hotdog? 🌭</h1>
+        <p class="text-gray-600 text-center mb-6">Upload an image to find out! (PNG, JPG, JPEG only)</p>
+        <label class="flex flex-col w-full h-32 border-4 border-dashed hover:bg-gray-100 hover:border-gray-300 mb-4 cursor-pointer">
             <div class="flex flex-col items-center justify-center pt-7">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
                     <path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd" />
@@ -36,10 +36,13 @@
             </div>
             <input type="file" id="fileInput" accept="image/*" class="opacity-0" />
         </label>
-        <button id="uploadButton" class="w-full py-2 px-4 rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Classify Image</button>
-        <div id="result" class="mt-6 text-center"></div>
+        <button id="uploadButton" class="w-full py-2 px-4 rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+            Classify Image
+        </button>
+        <div id="result" class="mt-6"></div>
         <div id="preview" class="mt-4 flex justify-center"></div>
     </div>
+
     <script>
         function createEmojiRain(isHotdog) {
             const emojis = isHotdog ? ['🎊', '🎉', '🌭'] : ['👎'];
@@ -63,42 +66,66 @@
 
         const API_URL = "http://127.0.0.1:8000/api/classify/";
         const [result, preview, fileInput, uploadButton] = ['result', 'preview', 'fileInput', 'uploadButton'].map(id => document.getElementById(id));
+
         fileInput.onchange = () => {
             const file = fileInput.files[0];
             if (file) {
                 const reader = new FileReader();
-                reader.onload = e => preview.innerHTML = `<img src="${e.target.result}" class="max-h-64 rounded-lg" />`;
+                reader.onload = e => {
+                    preview.innerHTML = `<img src="${e.target.result}" class="max-h-64 rounded-lg shadow-md" />`;
+                };
                 reader.readAsDataURL(file);
             }
         };
+
         uploadButton.onclick = async () => {
             const file = fileInput.files[0];
             if (!file) {
                 result.innerHTML = `<div class="bg-red-50 border-l-4 border-red-400 p-4"><div class="text-red-700">Please select an image first</div></div>`;
                 return;
             }
+
             if (!['.png', '.jpg', '.jpeg'].includes(file.name.toLowerCase().slice(file.name.lastIndexOf('.')))) {
                 result.innerHTML = `<div class="bg-red-50 border-l-4 border-red-400 p-4"><div class="text-red-700">Please upload a PNG, JPG, or JPEG file</div></div>`;
                 return;
             }
+
             try {
-                result.innerHTML = '<div class="animate-pulse text-gray-600">Processing...</div>';
-                const response = await fetch(API_URL, {method: 'POST', body: (formData => { formData.append('file', file); return formData; })(new FormData()), mode: 'cors', credentials: 'omit'});
+                result.innerHTML = '<div class="animate-pulse text-gray-600 text-center">Processing... 🔍</div>';
+                uploadButton.disabled = true;
+                uploadButton.classList.add('opacity-50', 'cursor-not-allowed');
+
+                const formData = new FormData();
+                formData.append('file', file);
+
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    body: formData,
+                    mode: 'cors',
+                    credentials: 'omit'
+                });
+
                 const data = await response.json();
                 const isHotdog = data.class.toLowerCase() === "hotdog";
+                
                 result.innerHTML = data.success ? 
                     `<div class="${isHotdog ? 'bg-green-50 border-l-4 border-green-400' : 'bg-red-50 border-l-4 border-red-400'} p-4">
                         <div class="${isHotdog ? 'text-green-700' : 'text-red-700'}">Class: <span class="font-semibold">${data.class}</span></div>
                         <div class="${isHotdog ? 'text-green-600' : 'text-red-600'}">Confidence: <span class="font-semibold">${(data.confidence * 100).toFixed(2)}%</span></div>
                     </div>` :
                     `<div class="bg-red-50 border-l-4 border-red-400 p-4"><div class="text-red-700">Error: ${data.error}</div></div>`;
-                
-                // Start emoji rain based on classification
+
                 if (data.success) {
                     createEmojiRain(isHotdog);
                 }
             } catch (error) {
-                result.innerHTML = `<div class="bg-red-50 border-l-4 border-red-400 p-4"><div class="text-red-700">Error: ${error.message}</div><div class="text-red-600">Status: ${error.status || 'Unknown'}</div></div>`;
+                result.innerHTML = `<div class="bg-red-50 border-l-4 border-red-400 p-4">
+                    <div class="text-red-700">Error: ${error.message}</div>
+                    <div class="text-red-600">Status: ${error.status || 'Unknown'}</div>
+                </div>`;
+            } finally {
+                uploadButton.disabled = false;
+                uploadButton.classList.remove('opacity-50', 'cursor-not-allowed');
             }
         };
     </script>
