@@ -3,6 +3,25 @@
 <head>
     <title>Image Classifier</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <style>
+        .emoji {
+            position: fixed;
+            font-size: 24px;
+            user-select: none;
+            pointer-events: none;
+            animation: fall linear forwards;
+            z-index: 1000;
+        }
+
+        @keyframes fall {
+            0% {
+                transform: translateY(-100vh);
+            }
+            100% {
+                transform: translateY(100vh);
+            }
+        }
+    </style>
 </head>
 <body class="bg-gray-100 min-h-screen p-4">
     <div class="max-w-md mx-auto bg-white rounded-xl shadow-md p-6">
@@ -22,6 +41,26 @@
         <div id="preview" class="mt-4 flex justify-center"></div>
     </div>
     <script>
+        function createEmojiRain(isHotdog) {
+            const emojis = isHotdog ? ['🎊', '🎉', '🌭'] : ['👎'];
+            const duration = 5000; // 5 seconds
+            const interval = setInterval(() => {
+                const emoji = emojis[Math.floor(Math.random() * emojis.length)];
+                const element = document.createElement('div');
+                element.className = 'emoji';
+                element.style.left = Math.random() * 100 + 'vw';
+                element.style.animation = `fall ${1 + Math.random() * 2}s linear forwards`;
+                element.textContent = emoji;
+                document.body.appendChild(element);
+
+                // Remove emoji after animation
+                setTimeout(() => element.remove(), 2000);
+            }, 100);
+
+            // Stop creating new emojis after duration
+            setTimeout(() => clearInterval(interval), duration);
+        }
+
         const API_URL = "http://127.0.0.1:8000/api/classify/";
         const [result, preview, fileInput, uploadButton] = ['result', 'preview', 'fileInput', 'uploadButton'].map(id => document.getElementById(id));
         fileInput.onchange = () => {
@@ -46,9 +85,18 @@
                 result.innerHTML = '<div class="animate-pulse text-gray-600">Processing...</div>';
                 const response = await fetch(API_URL, {method: 'POST', body: (formData => { formData.append('file', file); return formData; })(new FormData()), mode: 'cors', credentials: 'omit'});
                 const data = await response.json();
+                const isHotdog = data.class.toLowerCase() === "hotdog";
                 result.innerHTML = data.success ? 
-                    `<div class="bg-green-50 border-l-4 border-green-400 p-4"><div class="text-green-700">Class: <span class="font-semibold">${data.class}</span></div><div class="text-green-600">Confidence: <span class="font-semibold">${(data.confidence * 100).toFixed(2)}%</span></div></div>` :
+                    `<div class="${isHotdog ? 'bg-green-50 border-l-4 border-green-400' : 'bg-red-50 border-l-4 border-red-400'} p-4">
+                        <div class="${isHotdog ? 'text-green-700' : 'text-red-700'}">Class: <span class="font-semibold">${data.class}</span></div>
+                        <div class="${isHotdog ? 'text-green-600' : 'text-red-600'}">Confidence: <span class="font-semibold">${(data.confidence * 100).toFixed(2)}%</span></div>
+                    </div>` :
                     `<div class="bg-red-50 border-l-4 border-red-400 p-4"><div class="text-red-700">Error: ${data.error}</div></div>`;
+                
+                // Start emoji rain based on classification
+                if (data.success) {
+                    createEmojiRain(isHotdog);
+                }
             } catch (error) {
                 result.innerHTML = `<div class="bg-red-50 border-l-4 border-red-400 p-4"><div class="text-red-700">Error: ${error.message}</div><div class="text-red-600">Status: ${error.status || 'Unknown'}</div></div>`;
             }

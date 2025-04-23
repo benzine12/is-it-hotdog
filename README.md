@@ -28,7 +28,7 @@ is-it-hotdog/
 2. Create a virtual environment:
    ```
    virtualenv -p python3.10 env
-   source env/bin/activate  # On Windows use `env\Scripts\activate`
+   source env/bin/activate  # On Windows use `. env/bin/activate`
    ```
 
 3. Install the required dependencies:
