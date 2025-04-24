@@ -64,7 +64,7 @@
             setTimeout(() => clearInterval(interval), duration);
         }
 
-        const API_URL = "http://127.0.0.1:8000/api/classify/";
+        const API_URL = `${window.location.protocol}//${window.location.hostname}:8000/api/classify/`;
         const [result, preview, fileInput, uploadButton] = ['result', 'preview', 'fileInput', 'uploadButton'].map(id => document.getElementById(id));
 
         fileInput.onchange = () => {
